@@ -1,5 +1,5 @@
 {-# LANGUAGE NamedFieldPuns #-}
-module World.Shape (Shape, IsShape(..), toShape, Point) where
+module World.Shape (Shape, IsShape(..), toShape, Point, normal) where
 
 import Graphics.Gloss.Data.Color ( Color )
 
@@ -15,14 +15,19 @@ class IsShape a where
   -- absolute value.
   distanceSq :: a -> Point -> Double
 
-  distance s p
+  distance s x
     | d < 0 = -sqrt (-d)
     | otherwise = sqrt d
-    where d = distanceSq s p
-  distanceSq s p 
+    where d = distanceSq s x
+  distanceSq s x 
     | d < 0 = -(d*d)
     | otherwise = d*d
-    where d = distance s p
+    where d = distance s x
+
+-- | Approximate the unit normal vector to the nearest surface point
+-- on a shape.
+normal :: IsShape a => a -> Point -> Point
+normal s x = undefined
 
 -- | Conversion to the generic shape type, which allows us to do
 -- transformations on the distance function.
@@ -41,7 +46,7 @@ instance IsShape Shape where
   colour Shape{shapeColour} = shapeColour
 
 instance Semigroup Shape where
-  s1 <> s2 = Shape d c
+  s1 <> s2 = Shape d c 
     where
       d x = min (shapeDistance s1 x) (shapeDistance s2 x)
       c x
