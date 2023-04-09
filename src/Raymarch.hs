@@ -1,8 +1,6 @@
-module Raymarch (runRaymarcher, Config) where
+module Raymarch (runRaymarcher, Config(..)) where
 
-import World
 import World.Shape
-import World.Shapes
 import Graphics.Gloss.Data.Color (Color, black)
 import Control.Monad.State.Strict
 
@@ -59,7 +57,7 @@ hasCollided = do
 step :: Raymarcher ()
 step = do
   pos <- gets positionVector
-  dir <- gets directionVector
+  dir <- normalise <$> gets directionVector
   dist <- gets (distance . shape . config) <*> gets positionVector
   modify $ \s -> s { positionVector = pos `add` (dir `mul` dist), steps = steps s + 1 } 
 
@@ -100,3 +98,10 @@ sub (x1, y1, z1) (x2, y2, z2) = (x1 - x2, y1 - y2, z1 - z2)
 -- | Dot product on points.
 dot :: Point -> Point -> Double
 dot (x1, y1, z1) (x2, y2, z2) = x1 * x2 + y1 * y2 + z1 * z2
+
+mag :: Point -> Double
+mag (x, y, z) = sqrt (x * x + y * y + z * z)
+
+-- | Normalise a point.
+normalise :: Point -> Point
+normalise v = mul v (1 / mag v)
