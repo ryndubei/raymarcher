@@ -39,3 +39,11 @@ data Shape = Shape
 instance IsShape Shape where
   distance Shape{shapeDistance} = shapeDistance
   colour Shape{shapeColour} = shapeColour
+
+instance Semigroup Shape where
+  s1 <> s2 = Shape d c
+    where
+      d x = min (shapeDistance s1 x) (shapeDistance s2 x)
+      c x
+        | shapeDistance s1 x < shapeDistance s2 x = shapeColour s1 x
+        | otherwise = shapeColour s2 x
