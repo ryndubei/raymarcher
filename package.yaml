@@ -23,6 +23,7 @@ dependencies:
 - gloss
 - gloss-raster
 - mtl
+- linear
 
 ghc-options:
 - -Wall

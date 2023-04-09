@@ -2,8 +2,9 @@
 module World.Shape (Shape, IsShape(..), toShape, Point, normal) where
 
 import Graphics.Gloss.Data.Color ( Color )
+import Linear (V3)
 
-type Point = (Double, Double, Double)
+type Point = V3 Double
 
 class IsShape a where
   -- | Get the colour of the nearest point on a shape.
