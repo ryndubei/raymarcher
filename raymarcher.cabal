@@ -1,0 +1,74 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.35.1.
+--
+-- see: https://github.com/sol/hpack
+
+name:           raymarcher
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/ryndubei/raymarcher#readme>
+homepage:       https://github.com/ryndubei/raymarcher#readme
+bug-reports:    https://github.com/ryndubei/raymarcher/issues
+author:         ryndubei
+maintainer:     114586905+ryndubei@users.noreply.github.com
+copyright:      2023 ryndubei
+license:        AGPL-3.0-or-later
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/ryndubei/raymarcher
+
+library
+  exposed-modules:
+      World
+      World.Shape
+      World.Shapes
+  other-modules:
+      Paths_raymarcher
+  autogen-modules:
+      Paths_raymarcher
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , gloss
+    , gloss-raster
+  default-language: Haskell2010
+
+executable raymarcher-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_raymarcher
+  autogen-modules:
+      Paths_raymarcher
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , gloss
+    , gloss-raster
+    , raymarcher
+  default-language: Haskell2010
+
+test-suite raymarcher-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_raymarcher
+  autogen-modules:
+      Paths_raymarcher
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , gloss
+    , gloss-raster
+    , raymarcher
+  default-language: Haskell2010
