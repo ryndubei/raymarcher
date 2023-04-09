@@ -27,7 +27,7 @@ type Raymarcher = State RaymarcherState
 
 initialRaymarcherState :: Config -> RaymarcherState
 initialRaymarcherState config = RaymarcherState
-  { directionVector = L.normalize (initialDirectionVector config)
+  { directionVector = initialDirectionVector config
   , config = config
   , positionVector = initialPositionVector config
   , steps = 0
