@@ -27,6 +27,7 @@ class IsShape a where
 -- | Approximate the unit normal vector to the nearest surface point
 -- on a shape.
 normal :: IsShape a => a -> Point -> Point
+-- TODO: complete definition
 normal s x = undefined
 
 -- | Conversion to the generic shape type, which allows us to do
