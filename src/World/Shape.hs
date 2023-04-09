@@ -1,5 +1,5 @@
 {-# LANGUAGE NamedFieldPuns #-}
-module World.Shape (Shape, IsShape(..), toShape) where
+module World.Shape (Shape, IsShape(..), toShape, Point) where
 
 import Graphics.Gloss.Data.Color ( Color )
 
