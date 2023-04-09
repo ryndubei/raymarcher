@@ -6,23 +6,10 @@ import Graphics.Gloss.Data.Color ( Color )
 type Point = (Double, Double, Double)
 
 class IsShape a where
-  {-# MINIMAL colour, (distance | distanceSq) #-}
   -- | Get the colour of the nearest point on a shape.
   colour :: a -> Point -> Color
   -- | Get the signed distance function from a shape.
   distance :: a -> Point -> Double
-  -- | Get the signed distance function from a shape, with a squared
-  -- absolute value.
-  distanceSq :: a -> Point -> Double
-
-  distance s x
-    | d < 0 = -sqrt (-d)
-    | otherwise = sqrt d
-    where d = distanceSq s x
-  distanceSq s x 
-    | d < 0 = -(d*d)
-    | otherwise = d*d
-    where d = distance s x
 
 -- | Approximate the unit normal vector to the nearest surface point
 -- on a shape.

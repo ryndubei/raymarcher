@@ -26,7 +26,7 @@ type Raymarcher = State RaymarcherState
 
 initialRaymarcherState :: Config -> RaymarcherState
 initialRaymarcherState config = RaymarcherState
-  { directionVector = initialDirectionVector config
+  { directionVector = normalise (initialDirectionVector config)
   , config = config
   , positionVector = initialPositionVector config
   , steps = 0
@@ -57,7 +57,7 @@ hasCollided = do
 step :: Raymarcher ()
 step = do
   pos <- gets positionVector
-  dir <- normalise <$> gets directionVector
+  dir <- gets directionVector
   dist <- gets (distance . shape . config) <*> gets positionVector
   modify $ \s -> s { positionVector = pos `add` (dir `mul` dist), steps = steps s + 1 } 
 
