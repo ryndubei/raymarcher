@@ -37,6 +37,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math
   build-depends:
       base >=4.7 && <5
+    , containers
     , gloss
     , gloss-raster
     , linear
@@ -54,6 +55,7 @@ executable raymarcher-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , containers
     , gloss
     , gloss-raster
     , linear
@@ -73,6 +75,7 @@ test-suite raymarcher-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , containers
     , gloss
     , gloss-raster
     , linear

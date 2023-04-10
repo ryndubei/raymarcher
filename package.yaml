@@ -24,6 +24,7 @@ dependencies:
 - gloss-raster
 - mtl
 - linear
+- containers
 
 ghc-options:
 - -Wall
