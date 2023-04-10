@@ -1,5 +1,5 @@
 {-# LANGUAGE NamedFieldPuns #-}
-module World.Shape (Shape, IsShape(..), toShape, Point, normal) where
+module World.Shape (Shape, IsShape(..), toShape, Point, normal, intersection, difference) where
 
 import Graphics.Gloss.Data.Color ( Color )
 import qualified Linear as L
@@ -43,3 +43,19 @@ instance Semigroup Shape where
       c x
         | shapeDistance s1 x < shapeDistance s2 x = shapeColour s1 x
         | otherwise = shapeColour s2 x
+
+intersection :: Shape -> Shape -> Shape
+intersection s1 s2 = Shape d c 
+  where
+    d x = max (shapeDistance s1 x) (shapeDistance s2 x)
+    c x
+      | shapeDistance s1 x > shapeDistance s2 x = shapeColour s1 x
+      | otherwise = shapeColour s2 x
+
+difference :: Shape -> Shape -> Shape
+difference s1 s2 = Shape d c 
+  where
+    d x = max (shapeDistance s1 x) (- shapeDistance s2 x)
+    c x
+      | shapeDistance s1 x > - shapeDistance s2 x = shapeColour s1 x
+      | otherwise = shapeColour s2 x
