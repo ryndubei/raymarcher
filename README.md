@@ -3,6 +3,8 @@ raymarcher
 
 Raymarcher written with gloss-raster. Currently runs on the CPU.
 
+![Screenshot - A yellow sphere and a small green cube casting shadows over a tiled plane.](image.png)
+
 Build
 -----
 
