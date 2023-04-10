@@ -26,7 +26,7 @@ initialCameraState :: CameraState
 initialCameraState = CameraState
   { cameraPosition = L.V3 0 0 0
   , cameraRotation = 0
-  , cameraShape = yellowSphereOnPlane
+  , cameraShape = yellowSphereOnPlaneGreenCube
   , cameraSun = 0
   }
 
@@ -35,7 +35,7 @@ cameraDirection CameraState{cameraRotation} = L.rotate (L.axisAngle (L.V3 0 1 0)
 
 main :: IO ()
 main = 
-  playField window (8,8) 10 initialCameraState getColourAtPoint handleKeys (const id)
+  playField window (6,6) 10 initialCameraState getColourAtPoint handleKeys (const id)
 
 getColourAtPoint :: CameraState -> (Float, Float) -> Color
 getColourAtPoint CameraState{cameraShape, cameraPosition, cameraRotation, cameraSun} (x, y) = runRaymarcher Config 
