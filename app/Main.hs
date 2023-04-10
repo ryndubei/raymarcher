@@ -33,7 +33,7 @@ cameraDirection CameraState{cameraRotation} = L.rotate (L.axisAngle (L.V3 0 1 0)
 
 main :: IO ()
 main = 
-  playField window (3,3) 10 initialCameraState getColourAtPoint handleKeys (const id)
+  playField window (4,4) 10 initialCameraState getColourAtPoint handleKeys (const id)
 
 getColourAtPoint :: CameraState -> (Float, Float) -> Color
 getColourAtPoint CameraState{cameraShape, cameraPosition, cameraRotation} (x, y) = runRaymarcher Config 
@@ -43,7 +43,7 @@ getColourAtPoint CameraState{cameraShape, cameraPosition, cameraRotation} (x, y)
   , initialDirectionVector = L.rotate (L.axisAngle (L.V3 0 1 0) cameraRotation) (L.normalize (L.V3 (realToFrac x) (realToFrac y) 1))
   , initialPositionVector = cameraPosition
   , fog = const black
-  , sun = L.V3 0 0 1
+  , sun = L.normalize $ L.V3 1 0.5 0
   , shape = cameraShape
   }
 
@@ -54,5 +54,7 @@ handleKeys (EventKey (Char 'a') Down _ _) state = state { cameraPosition = camer
 handleKeys (EventKey (Char 'd') Down _ _) state = state { cameraPosition = cameraPosition state + L.cross (L.V3 0 1 0) (cameraDirection state) }
 handleKeys (EventKey (SpecialKey KeyRight) Down _ _) state = state { cameraRotation = cameraRotation state + 0.1 }
 handleKeys (EventKey (SpecialKey KeyLeft) Down _ _) state = state { cameraRotation = cameraRotation state - 0.1 }
+handleKeys (EventKey (Char 'r') Down _ _) state = state { cameraPosition = cameraPosition state + L.V3 0 1 0 }
+handleKeys (EventKey (Char 'f') Down _ _) state = state { cameraPosition = cameraPosition state - L.V3 0 1 0 }
 handleKeys _ state = state
 

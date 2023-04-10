@@ -1,9 +1,10 @@
 module Raymarch (runRaymarcher, Config(..)) where
 
 import World.Shape
-import Graphics.Gloss.Data.Color (Color, black)
+import Graphics.Gloss.Data.Color (Color, black, dark)
 import Control.Monad.State.Strict
 import qualified Linear as L
+import Data.Bool (bool)
 
 data Config = Config
   { maxSteps :: Int
@@ -76,5 +77,28 @@ raymarcher = do
   if hasEscaped' || hasReachedMaxSteps'
     then pure black
   else if hasCollided'
-    then getBaseColour
+    then getBaseColour >>= \c -> bool ((dark . dark) c) c <$> getIsLit 
   else step >> raymarcher
+
+getIsLit :: Raymarcher Bool
+getIsLit = withState f go
+  where
+    f s = s { directionVector = sun (config s), steps = 0 }
+    go = do
+      escapeSurface
+      step
+      hasEscaped' <- hasEscaped
+      hasReachedMaxSteps' <- hasReachedMaxSteps
+      hasCollided' <- hasCollided
+      if hasEscaped' || hasReachedMaxSteps'
+        then pure True
+      else if hasCollided'
+        then pure False
+      else step >> go
+
+escapeSurface :: Raymarcher ()
+escapeSurface = do
+  pos <- gets positionVector
+  dir <- gets directionVector
+  dist <- gets (epsilon . config)
+  modify $ \s -> s { positionVector = pos + (dir L.^* dist) }
