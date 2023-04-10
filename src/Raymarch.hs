@@ -11,7 +11,7 @@ data Config = Config
   , epsilon :: Double
   , initialDirectionVector :: Point
   , initialPositionVector :: Point
-  , fog :: Double -> Color
+  , fog :: Color
   , sun :: Point
   , shape :: Shape
   }
@@ -60,7 +60,7 @@ step = do
   pos <- gets positionVector
   dir <- gets directionVector
   dist <- gets (distance . shape . config) <*> gets positionVector
-  modify $ \s -> s { positionVector = pos + (dir L.^* dist), steps = steps s + 1 } 
+  modify $ \s -> s { positionVector = pos + (dir L.^* dist), steps = steps s + 1 }
 
 getBaseColour :: Raymarcher Color
 getBaseColour = gets (colour . shape . config) <*> gets positionVector
@@ -74,18 +74,23 @@ raymarcher = do
   hasReachedMaxSteps' <- hasReachedMaxSteps
   hasCollided' <- hasCollided
   if hasEscaped'
-    then pure black
+    then gets (fog . config)
   else if hasCollided' || hasReachedMaxSteps'
-    then do
-      v1 <- gets (sun . config)
-      v2 <- gets (normal . epsilon . config) <*> gets (shape . config) <*> gets positionVector
-      let lightingNormal = (v1 `L.dot` v2) / (L.norm v1 * L.norm v2)
-      lit <- getIsLit
-      let factor = if lightingNormal < 0 || not lit
-            then 0.1
-            else realToFrac $ 0.9*lightingNormal + 0.1
-      mixColors (1 - factor) factor black <$> getBaseColour
+    then getColour
   else step >> raymarcher
+
+getColour :: Raymarcher Color
+getColour = do
+  v1 <- gets (sun . config)
+  v2 <- gets (normal . epsilon . config) <*> gets (shape . config) <*> gets positionVector
+  lit <- getIsLit
+  let lightingNormal = (v1 `L.dot` v2) / (L.norm v1 * L.norm v2)
+      lightingFactor = if lightingNormal < 0 || not lit
+        then 0.1
+        else realToFrac $ 0.9*lightingNormal + 0.1
+  litBaseColour <- mixColors (1 - lightingFactor) lightingFactor black <$> getBaseColour
+  fogFactor <- (\d maxd -> if d > maxd then 1.0 else realToFrac (d/maxd)) <$> distanceFromStartSq <*> gets (maxDistanceSq . config)
+  mixColors (1 - fogFactor) fogFactor litBaseColour <$> gets (fog . config)
 
 getIsLit :: Raymarcher Bool
 getIsLit = evalState go . f <$> get
@@ -97,7 +102,7 @@ getIsLit = evalState go . f <$> get
       hasEscaped' <- hasEscaped
       hasReachedMaxSteps' <- hasReachedMaxSteps
       hasCollided' <- hasCollided
-      if hasEscaped' 
+      if hasEscaped'
         then pure True
       else if hasCollided' || hasReachedMaxSteps'
         then pure False

@@ -44,7 +44,7 @@ getColourAtPoint CameraState{cameraShape, cameraPosition, cameraRotation, camera
   , epsilon = 0.001
   , initialDirectionVector = L.rotate (L.axisAngle (L.V3 0 1 0) cameraRotation) (L.normalize (L.V3 (realToFrac x) (realToFrac y) 1))
   , initialPositionVector = cameraPosition
-  , fog = const black
+  , fog = black
   , sun = L.rotate (L.axisAngle (L.V3 0 0 1) cameraSun) (L.normalize $ L.V3 1 0.5 0)
   , shape = cameraShape
   }
