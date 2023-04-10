@@ -47,6 +47,7 @@ getColourAtPoint CameraState{cameraShape, cameraPosition, cameraRotation, camera
   , fog = black
   , sun = L.rotate (L.axisAngle (L.V3 0 0 1) cameraSun) (L.normalize $ L.V3 1 0.5 0)
   , shape = cameraShape
+  , ambientLighting = 0.1
   }
 
 handleKeys :: Event -> CameraState -> CameraState

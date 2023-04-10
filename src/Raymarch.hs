@@ -14,6 +14,7 @@ data Config = Config
   , fog :: Color
   , sun :: Point
   , shape :: Shape
+  , ambientLighting :: Double
   }
 
 data RaymarcherState = RaymarcherState
@@ -84,10 +85,11 @@ getColour = do
   v1 <- gets (sun . config)
   v2 <- gets (normal . epsilon . config) <*> gets (shape . config) <*> gets positionVector
   lit <- getIsLit
+  ambient <- gets (ambientLighting . config)
   let lightingNormal = (v1 `L.dot` v2) / (L.norm v1 * L.norm v2)
       lightingFactor = if lightingNormal < 0 || not lit
-        then 0.1
-        else realToFrac $ 0.9*lightingNormal + 0.1
+        then realToFrac ambient
+        else realToFrac $ (1 - ambient)*lightingNormal + ambient
   litBaseColour <- mixColors (1 - lightingFactor) lightingFactor black <$> getBaseColour
   fogFactor <- (\d maxd -> if d > maxd then 1.0 else realToFrac (d/maxd)) <$> distanceFromStartSq <*> gets (maxDistanceSq . config)
   mixColors (1 - fogFactor) fogFactor litBaseColour <$> gets (fog . config)
