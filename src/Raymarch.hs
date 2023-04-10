@@ -97,9 +97,9 @@ getIsLit = evalState go . f <$> get
       hasEscaped' <- hasEscaped
       hasReachedMaxSteps' <- hasReachedMaxSteps
       hasCollided' <- hasCollided
-      if hasEscaped' || hasReachedMaxSteps'
+      if hasEscaped' 
         then pure True
-      else if hasCollided'
+      else if hasCollided' || hasReachedMaxSteps'
         then pure False
       else step >> go
 
