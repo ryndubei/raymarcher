@@ -19,10 +19,10 @@ instance IsShape Sphere where
 data Plane = Plane 
   { planeNormal :: Point
   , planeOffset :: Double
-  , planeColour :: Color
+  , planeColour :: Point -> Color
   }
 
 instance IsShape Plane where
-  colour Plane{planeColour} = const planeColour
+  colour Plane{planeColour} = planeColour
   distance Plane{planeNormal, planeOffset} v = 
     ((v `L.dot` planeNormal) - planeOffset) / sqrt (planeNormal `L.dot` planeNormal)
