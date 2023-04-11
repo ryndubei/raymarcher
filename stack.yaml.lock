@@ -3,7 +3,50 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    name: accelerate
+    pantry-tree:
+      sha256: 319098d271f976323c328f56c52a33046f25ee86985ba40bd17a13e7e3c40afc
+      size: 18585
+    sha256: 89f32e1d18faaa1bee059adf83987d5a65337ac91540292976b80e0ed53d8b90
+    size: 719083
+    url: https://github.com/AccelerateHS/accelerate/archive/5971c5d8e4dbba28d2017e7ce422cf46a20197cb.tar.gz
+    version: 1.3.0.0
+  original:
+    url: https://github.com/AccelerateHS/accelerate/archive/5971c5d8e4dbba28d2017e7ce422cf46a20197cb.tar.gz
+- completed:
+    hackage: gloss-accelerate-2.1.0.0@sha256:918bbb7ef1729a8689b30b1670491d8d05f183dabf5d6f33774d61de5f79b845,1358
+    pantry-tree:
+      sha256: 204919d7b3c35f3fb6d7f2d2dc2112275003ca1220bdac9d9cbf910159fb484d
+      size: 379
+  original:
+    hackage: gloss-accelerate-2.1.0.0
+- completed:
+    hackage: gloss-raster-accelerate-2.1.0.0@sha256:7c17ef365dc8e258a2ff6fc56b1c96b024d7015b91e1ac98b0264b654de3c22d,1397
+    pantry-tree:
+      sha256: c83d59d88b87bfb30155741e39e2b2d84230fa22da59b10aaa3f5cc92e2d0f79
+      size: 418
+  original:
+    hackage: gloss-raster-accelerate-2.1.0.0
+- completed:
+    hackage: colour-accelerate-0.4.0.0@sha256:de76eebd743e1ad492c7577534f7c8224ec8178f310ee316a35e18372395d1b7,1706
+    pantry-tree:
+      sha256: 4e5b4451bfa98c3442d12e2d9b404aa21b32d0b37b7b36b02bdf275af132d27f
+      size: 14789
+  original:
+    hackage: colour-accelerate-0.4.0.0
+- completed:
+    name: linear-accelerate
+    pantry-tree:
+      sha256: 51b1b0372d3ffb52509a59e4db7f38af7273628f195f862bb46922f68c270e51
+      size: 2352
+    sha256: 7fb7ed8cc282899dde83b01cf6b00311978b9ce1ddec6823558494ee96d1c412
+    size: 22261
+    url: https://github.com/ryndubei/linear-accelerate/archive/e2b36f2affee87a093332f5334db189e957ba295.tar.gz
+    version: 0.7.0.0
+  original:
+    url: https://github.com/ryndubei/linear-accelerate/archive/e2b36f2affee87a093332f5334db189e957ba295.tar.gz
 snapshots:
 - completed:
     sha256: adbc602422dde10cc330175da7de8609e70afc41449a7e2d6e8b1827aa0e5008
