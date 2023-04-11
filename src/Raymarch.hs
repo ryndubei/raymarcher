@@ -1,6 +1,6 @@
 module Raymarch (runRaymarcher, Config(..)) where
 
-import World.Shape
+import World.Shape.Temporary
 import Control.Monad.State.Strict
 import qualified Linear as L
 import Graphics.Gloss.Raster.Field (Color, black, mixColors)

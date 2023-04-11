@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 module World where
 
-import World.Shape
+import World.Shape.Temporary
 import World.Shapes
 import Graphics.Gloss.Data.Color
 import qualified Linear as L

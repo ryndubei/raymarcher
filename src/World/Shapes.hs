@@ -1,7 +1,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module World.Shapes (Sphere(..), Plane(..), Cube(..)) where
 
-import World.Shape
+import World.Shape.Temporary
 import Graphics.Gloss.Data.Color (Color)
 import qualified Linear as L
 
