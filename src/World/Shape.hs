@@ -1,11 +1,14 @@
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE RebindableSyntax #-}
 module World.Shape (Shape, IsShape(..), toShape, Point, normal, intersection, difference) where
 
+import Prelude hiding ((>), (<), (&&), (||), (==), not, otherwise)
 import qualified Linear as L
 import qualified Data.Array.Accelerate.Linear ()
 import qualified Data.Array.Accelerate.Linear as AL
 import Graphics.Gloss.Accelerate.Raster.Field (Colour)
 import qualified Data.Array.Accelerate as A
+import Data.Array.Accelerate (ifThenElse, (<), (>))
 
 -- | 3-dimensional vector. 
 type Point = L.V3 Double
@@ -44,22 +47,22 @@ instance Semigroup Shape where
   s1 <> s2 = Shape d c 
     where
       d x = min (shapeDistance s1 x) (shapeDistance s2 x)
-      c x
-        | shapeDistance s1 x < shapeDistance s2 x = shapeColour s1 x
-        | otherwise = shapeColour s2 x
+      c x = if shapeDistance s1 x < shapeDistance s2 x 
+        then shapeColour s1 x
+        else shapeColour s2 x
 
 intersection :: Shape -> Shape -> Shape
 intersection s1 s2 = Shape d c 
   where
     d x = max (shapeDistance s1 x) (shapeDistance s2 x)
-    c x
-      | shapeDistance s1 x > shapeDistance s2 x = shapeColour s1 x
-      | otherwise = shapeColour s2 x
+    c x = if shapeDistance s1 x > shapeDistance s2 x
+      then shapeColour s1 x
+      else shapeColour s2 x
 
 difference :: Shape -> Shape -> Shape
 difference s1 s2 = Shape d c 
   where
     d x = max (shapeDistance s1 x) (- shapeDistance s2 x)
-    c x
-      | shapeDistance s1 x > - shapeDistance s2 x = shapeColour s1 x
-      | otherwise = shapeColour s2 x
+    c x = if shapeDistance s1 x > - shapeDistance s2 x 
+      then shapeColour s1 x
+      else shapeColour s2 x

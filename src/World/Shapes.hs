@@ -41,4 +41,4 @@ instance IsShape Cube where
   distance Cube{cubeRadius, cubePosition} p =
     let (L.V3 x y z) = A.unlift p
         (L.V3 a b c) = A.unlift cubePosition
-     in maximum [abs (x - a), abs (y - b), abs (z - c)] - cubeRadius
+     in foldr1 A.max [abs (x - a), abs (y - b), abs (z - c)] - cubeRadius
