@@ -1,15 +1,20 @@
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveAnyClass #-}
 module Main (main) where
 
-import Graphics.Gloss.Raster.Field
-import World
-import World.Shape (Shape)
-import Raymarch (runRaymarcher, Config(..))
 import qualified Linear as L
+import Data.Array.Accelerate.Linear ()
 import Graphics.Gloss.Interface.Pure.Game (Event (EventKey), Key (..), KeyState (..), SpecialKey (..))
 import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
+import qualified Data.Array.Accelerate.Interpreter as Interp
+import qualified Data.Array.Accelerate as A
+import Graphics.Gloss.Accelerate.Raster.Field
+import GHC.Generics (Generic)
+import Data.List (singleton)
+import World.Shape (Shape)
 
 windowWidth, windowHeight :: Int
 windowWidth = 600
@@ -21,7 +26,6 @@ window = InWindow "Raymarcher" (windowWidth, windowHeight) (0, 0)
 data CameraState = CameraState
   { cameraPosition :: L.V3 Double
   , cameraRotation :: Double
-  , cameraShape :: Shape
   , cameraSun :: Double
   , pressedKeys :: S.Set Key
   }
@@ -30,7 +34,6 @@ initialCameraState :: CameraState
 initialCameraState = CameraState
   { cameraPosition = L.V3 0 0 0
   , cameraRotation = 0
-  , cameraShape = yellowSphereOnPlaneGreenCube
   , cameraSun = 0
   , pressedKeys = S.empty
   }
@@ -38,22 +41,34 @@ initialCameraState = CameraState
 cameraDirection :: CameraState -> L.V3 Double
 cameraDirection CameraState{cameraRotation} = L.rotate (L.axisAngle (L.V3 0 1 0) cameraRotation) (L.V3 0 0 1)
 
-main :: IO ()
-main =
-  playField window (7,7) 15 initialCameraState getColourAtPoint handleKeys update
+prepareState :: CameraState -> AState
+prepareState state@CameraState{cameraPosition, cameraSun} = 
+  A.fromList A.Z . singleton $ CameraInfo
+    { aCameraPosition = cameraPosition
+    , aCameraDirection = cameraDirection state
+    , aCameraSun = cameraSun
+    }
 
-getColourAtPoint :: CameraState -> (Float, Float) -> Color
-getColourAtPoint CameraState{cameraShape, cameraPosition, cameraRotation, cameraSun} (x, y) = runRaymarcher Config
-  { maxSteps = 100
-  , maxDistanceSq = 100
-  , epsilon = 0.001
-  , initialDirectionVector = L.rotate (L.axisAngle (L.V3 0 1 0) cameraRotation) (L.normalize (L.V3 (realToFrac x) (realToFrac y) 1))
-  , initialPositionVector = cameraPosition
-  , fog = black
-  , sun = L.rotate (L.axisAngle (L.V3 0 0 1) cameraSun) (L.normalize $ L.V3 1 0.5 0)
-  , shape = cameraShape
-  , ambientLighting = 0.1
-  }
+type AState = A.Scalar CameraInfo
+
+data CameraInfo = CameraInfo
+  { aCameraPosition :: L.V3 Double
+  , aCameraDirection :: L.V3 Double
+  , aCameraSun :: Double
+  } deriving (Show, Eq, Generic, A.Elt)
+
+main :: IO ()
+main = do
+  playFieldWith Interp.run1 window (7,7) 15 initialCameraState prepareState aGetColourAtPoint handleKeys update
+
+aGetColourAtPoint :: A.Acc AState -> A.Exp (L.V2 Float) -> A.Exp Colour
+aGetColourAtPoint = undefined
+
+-- plan: as we cannot pass a function to Accelerate, we will use this instead
+-- to generate the distance function representing the shape inside Accelerate
+-- this will be called by aGetColourAtPoint
+scene :: A.Acc AState -> A.Exp Shape
+scene = undefined
 
 handleKeys :: Event -> CameraState -> CameraState
 handleKeys (EventKey key Down _ _) state = state { pressedKeys = S.insert key (pressedKeys state) }

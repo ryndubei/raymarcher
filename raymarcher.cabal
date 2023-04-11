@@ -36,11 +36,14 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math
   build-depends:
-      base >=4.7 && <5
+      accelerate
+    , base >=4.7 && <5
     , containers
     , gloss
     , gloss-raster
+    , gloss-raster-accelerate
     , linear
+    , linear-accelerate
     , mtl
   default-language: Haskell2010
 
@@ -54,11 +57,14 @@ executable raymarcher-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      accelerate
+    , base >=4.7 && <5
     , containers
     , gloss
     , gloss-raster
+    , gloss-raster-accelerate
     , linear
+    , linear-accelerate
     , mtl
     , raymarcher
   default-language: Haskell2010
@@ -74,11 +80,14 @@ test-suite raymarcher-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      accelerate
+    , base >=4.7 && <5
     , containers
     , gloss
     , gloss-raster
+    , gloss-raster-accelerate
     , linear
+    , linear-accelerate
     , mtl
     , raymarcher
   default-language: Haskell2010

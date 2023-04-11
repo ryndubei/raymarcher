@@ -25,6 +25,9 @@ dependencies:
 - mtl
 - linear
 - containers
+- accelerate
+- linear-accelerate
+- gloss-raster-accelerate
 
 ghc-options:
 - -Wall
