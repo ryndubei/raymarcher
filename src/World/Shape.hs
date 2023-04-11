@@ -1,24 +1,28 @@
 {-# LANGUAGE NamedFieldPuns #-}
 module World.Shape (Shape, IsShape(..), toShape, Point, normal, intersection, difference) where
 
-import Graphics.Gloss.Data.Color ( Color )
 import qualified Linear as L
+import qualified Data.Array.Accelerate.Linear ()
+import qualified Data.Array.Accelerate.Linear as AL
+import Graphics.Gloss.Accelerate.Raster.Field (Colour)
+import qualified Data.Array.Accelerate as A
 
+-- | 3-dimensional vector. 
 type Point = L.V3 Double
 
 class IsShape a where
   -- | Get the colour of the nearest point on a shape.
-  colour :: a -> Point -> Color
+  colour :: a -> A.Exp Point -> A.Exp Colour
   -- | Get the signed distance function from a shape.
-  distance :: a -> Point -> Double
+  distance :: a -> A.Exp Point -> A.Exp Double
 
 -- | Approximate the unit normal vector to the nearest surface point
 -- on a shape for a given epsilon value.
-normal :: IsShape a => Double -> a -> Point -> Point
+normal :: IsShape a => A.Exp Double -> a -> A.Exp Point -> A.Exp Point
 normal eps s x = 
-  let v1 = L.V3 (distance s $ x + L.V3 eps 0 0) (distance s $ x + L.V3 0 eps 0) (distance s $ x + L.V3 0 0 eps)
-      v2 = L.V3 (distance s $ x - L.V3 eps 0 0) (distance s $ x - L.V3 0 eps 0) (distance s $ x - L.V3 0 0 eps)
-   in L.normalize (v1 - v2)
+  let v1 = L.V3 (distance s $ x + A.lift (L.V3 eps 0 0)) (distance s $ x + A.lift (L.V3 0 eps 0)) (distance s $ x + A.lift (L.V3 0 0 eps))
+      v2 = L.V3 (distance s $ x - A.lift (L.V3 eps 0 0)) (distance s $ x - A.lift (L.V3 0 eps 0)) (distance s $ x - A.lift (L.V3 0 0 eps))
+   in AL.normalize (A.lift $ v1 - v2)
 
 -- | Conversion to the generic shape type, which allows us to do
 -- transformations on the distance function.
@@ -28,8 +32,8 @@ toShape s = Shape (distance s) (colour s)
 -- | A Shape is something that possesses a distance function and
 -- a colour.
 data Shape = Shape 
-  { shapeDistance :: Point -> Double
-  , shapeColour :: Point -> Color
+  { shapeDistance :: A.Exp Point -> A.Exp Double
+  , shapeColour :: A.Exp Point -> A.Exp Colour
   }
 
 instance IsShape Shape where
