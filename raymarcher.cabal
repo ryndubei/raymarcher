@@ -39,6 +39,7 @@ library
   build-depends:
       accelerate
     , base >=4.7 && <5
+    , colour-accelerate
     , containers
     , gloss
     , gloss-raster
@@ -60,6 +61,7 @@ executable raymarcher-exe
   build-depends:
       accelerate
     , base >=4.7 && <5
+    , colour-accelerate
     , containers
     , gloss
     , gloss-raster
@@ -83,6 +85,7 @@ test-suite raymarcher-test
   build-depends:
       accelerate
     , base >=4.7 && <5
+    , colour-accelerate
     , containers
     , gloss
     , gloss-raster
