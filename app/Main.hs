@@ -1,6 +1,7 @@
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE PatternSynonyms #-}
 module Main (main) where
 
 import qualified Linear as L
@@ -15,6 +16,10 @@ import Graphics.Gloss.Accelerate.Raster.Field
 import GHC.Generics (Generic)
 import Data.List (singleton)
 import World.Shape (Shape)
+import World (yellowSphereOnPlaneGreenCube)
+import Raymarch
+import qualified Data.Array.Accelerate.Linear as AL
+import Data.Array.Accelerate.Data.Colour.Names
 
 windowWidth, windowHeight :: Int
 windowWidth = 600
@@ -41,34 +46,53 @@ initialCameraState = CameraState
 cameraDirection :: CameraState -> L.V3 Double
 cameraDirection CameraState{cameraRotation} = L.rotate (L.axisAngle (L.V3 0 1 0) cameraRotation) (L.V3 0 0 1)
 
+cameraSunDirection :: CameraState -> L.V3 Double
+cameraSunDirection CameraState{cameraSun} = L.rotate (L.axisAngle (L.V3 0 0 1) cameraSun) (L.normalize $ L.V3 1 0.5 0)
+
 prepareState :: CameraState -> AState
-prepareState state@CameraState{cameraPosition, cameraSun} = 
+prepareState state@CameraState{cameraPosition, cameraRotation} = 
   A.fromList A.Z . singleton $ CameraInfo
     { aCameraPosition = cameraPosition
-    , aCameraDirection = cameraDirection state
-    , aCameraSun = cameraSun
+    , aCameraRotation = cameraRotation
+    , aCameraSun = cameraSunDirection state
     }
 
 type AState = A.Scalar CameraInfo
 
 data CameraInfo = CameraInfo
   { aCameraPosition :: L.V3 Double
-  , aCameraDirection :: L.V3 Double
-  , aCameraSun :: Double
-  } deriving (Show, Eq, Generic, A.Elt)
+  , aCameraRotation :: Double
+  , aCameraSun :: L.V3 Double
+  } deriving (Show, Eq, Generic, A.Elt )
+
+pattern CameraInfo_ :: A.Exp (L.V3 Double) -> A.Exp Double -> A.Exp (L.V3 Double) -> A.Exp CameraInfo
+pattern CameraInfo_ pos rot sun = A.Pattern (pos,rot,sun)
+{-# COMPLETE CameraInfo_ #-}
 
 main :: IO ()
 main = do
   playFieldWith Interp.run1 window (7,7) 15 initialCameraState prepareState aGetColourAtPoint handleKeys update
 
 aGetColourAtPoint :: A.Acc AState -> A.Exp (L.V2 Float) -> A.Exp Colour
-aGetColourAtPoint = undefined
+aGetColourAtPoint aState (AL.V2_ x y) =
+  let (CameraInfo_ pos rot sun) = A.the aState
+      config = Config
+        { maxSteps = 100
+        , maxDistanceSq = 100
+        , epsilon = 0.001
+        , initialDirectionVector = AL.rotate 
+            (AL.axisAngle (A.lift $ L.V3 (0 :: Double) 1 0) rot) 
+            (AL.normalize (A.lift $ L.V3 (realToFrac x :: Double) (realToFrac y) 1))
+        , initialPositionVector = pos
+        , fog = black
+        , sun
+        , shape = scene aState
+        , ambientLighting = 0.1
+        }
+   in runRaymarcher config
 
--- plan: as we cannot pass a function to Accelerate, we will use this instead
--- to generate the distance function representing the shape inside Accelerate
--- this will be called by aGetColourAtPoint
-scene :: A.Acc AState -> A.Exp Shape
-scene = undefined
+scene :: A.Acc AState -> Shape
+scene = const yellowSphereOnPlaneGreenCube
 
 handleKeys :: Event -> CameraState -> CameraState
 handleKeys (EventKey key Down _ _) state = state { pressedKeys = S.insert key (pressedKeys state) }
