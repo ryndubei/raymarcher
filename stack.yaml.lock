@@ -37,6 +37,58 @@ packages:
   original:
     hackage: colour-accelerate-0.4.0.0
 - completed:
+    name: accelerate-llvm-native
+    pantry-tree:
+      sha256: d9ef4ae4d512843823b74a8fe8d6318725e05f37a6e819ffec2e2985dc93d250
+      size: 4849
+    sha256: 37b13937c69f72193336f104e22b1664ffe57d3f7a721475e518be5e3a008b77
+    size: 282402
+    subdir: accelerate-llvm-native
+    url: https://github.com/tmcdonell/accelerate-llvm/archive/c647a5c3fbf2c795bd2ce67b4c5f288fcc4a0b4b.tar.gz
+    version: 1.3.0.0
+  original:
+    subdir: accelerate-llvm-native
+    url: https://github.com/tmcdonell/accelerate-llvm/archive/c647a5c3fbf2c795bd2ce67b4c5f288fcc4a0b4b.tar.gz
+- completed:
+    name: accelerate-llvm
+    pantry-tree:
+      sha256: 7fb7a74e0eb88df24c2a56d866710a6b1a7c11ab45cfc369fac72c7df35d9628
+      size: 5825
+    sha256: 37b13937c69f72193336f104e22b1664ffe57d3f7a721475e518be5e3a008b77
+    size: 282402
+    subdir: accelerate-llvm
+    url: https://github.com/tmcdonell/accelerate-llvm/archive/c647a5c3fbf2c795bd2ce67b4c5f288fcc4a0b4b.tar.gz
+    version: 1.3.0.0
+  original:
+    subdir: accelerate-llvm
+    url: https://github.com/tmcdonell/accelerate-llvm/archive/c647a5c3fbf2c795bd2ce67b4c5f288fcc4a0b4b.tar.gz
+- completed:
+    name: llvm-hs
+    pantry-tree:
+      sha256: 61afae27125778d5d8f6de43998a7ab5457d7fbb4f6ebd8eeca56898b6534964
+      size: 12781
+    sha256: 002c441bb649182dd23983117d09722f43a6fb45d196a89298351ff1928e6bda
+    size: 9806110
+    subdir: llvm-hs
+    url: https://github.com/llvm-hs/llvm-hs/archive/a0db9e9753a3757f25f40ed1311cab2e748a3dd6.tar.gz
+    version: 12.0.0
+  original:
+    subdir: llvm-hs
+    url: https://github.com/llvm-hs/llvm-hs/archive/a0db9e9753a3757f25f40ed1311cab2e748a3dd6.tar.gz
+- completed:
+    name: llvm-hs-pure
+    pantry-tree:
+      sha256: 0ab7abd99d7db5ba035db340398cafecf4566ba64ef5a3bc9bee18a8efd38570
+      size: 2712
+    sha256: 002c441bb649182dd23983117d09722f43a6fb45d196a89298351ff1928e6bda
+    size: 9806110
+    subdir: llvm-hs-pure
+    url: https://github.com/llvm-hs/llvm-hs/archive/a0db9e9753a3757f25f40ed1311cab2e748a3dd6.tar.gz
+    version: 12.0.0
+  original:
+    subdir: llvm-hs-pure
+    url: https://github.com/llvm-hs/llvm-hs/archive/a0db9e9753a3757f25f40ed1311cab2e748a3dd6.tar.gz
+- completed:
     name: linear-accelerate
     pantry-tree:
       sha256: 51b1b0372d3ffb52509a59e4db7f38af7273628f195f862bb46922f68c270e51

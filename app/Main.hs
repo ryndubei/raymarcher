@@ -11,6 +11,7 @@ import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
 import qualified Data.Array.Accelerate.Interpreter as Interp
+import qualified Data.Array.Accelerate.LLVM.Native as Native
 import qualified Data.Array.Accelerate as A
 import Graphics.Gloss.Accelerate.Raster.Field
 import GHC.Generics (Generic)
@@ -22,8 +23,8 @@ import qualified Data.Array.Accelerate.Linear as AL
 import Data.Array.Accelerate.Data.Colour.Names
 
 windowWidth, windowHeight :: Int
-windowWidth = 600
-windowHeight = 600
+windowWidth = 800
+windowHeight = 800
 
 window :: Display
 window = InWindow "Raymarcher" (windowWidth, windowHeight) (0, 0)
@@ -71,7 +72,7 @@ pattern CameraInfo_ pos rot sun = A.Pattern (pos,rot,sun)
 
 main :: IO ()
 main = do
-  playFieldWith Interp.run1 window (7,7) 15 initialCameraState prepareState aGetColourAtPoint handleKeys update
+  playFieldWith Native.run1 window (2,2) 15 initialCameraState prepareState aGetColourAtPoint handleKeys update
 
 aGetColourAtPoint :: A.Acc AState -> A.Exp (L.V2 Float) -> A.Exp Colour
 aGetColourAtPoint aState (AL.V2_ x y) =

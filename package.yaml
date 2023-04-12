@@ -21,7 +21,6 @@ description:         Please see the README on GitHub at <https://github.com/rynd
 dependencies:
 - base >= 4.7 && < 5
 - gloss
-- gloss-raster
 - mtl
 - linear
 - containers
@@ -29,6 +28,7 @@ dependencies:
 - linear-accelerate
 - gloss-raster-accelerate
 - colour-accelerate
+- accelerate-llvm-native
 
 ghc-options:
 - -Wall

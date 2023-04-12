@@ -46,6 +46,16 @@ extra-deps:
 - gloss-accelerate-2.1.0.0
 - gloss-raster-accelerate-2.1.0.0
 - colour-accelerate-0.4.0.0
+- github: tmcdonell/accelerate-llvm
+  commit: c647a5c3fbf2c795bd2ce67b4c5f288fcc4a0b4b
+  subdirs:
+    - accelerate-llvm-native
+    - accelerate-llvm
+- github: llvm-hs/llvm-hs
+  commit: a0db9e9753a3757f25f40ed1311cab2e748a3dd6
+  subdirs:
+    - llvm-hs
+    - llvm-hs-pure
 - github: ryndubei/linear-accelerate
   commit: e2b36f2affee87a093332f5334db189e957ba295
 

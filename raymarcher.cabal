@@ -38,11 +38,11 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math
   build-depends:
       accelerate
+    , accelerate-llvm-native
     , base >=4.7 && <5
     , colour-accelerate
     , containers
     , gloss
-    , gloss-raster
     , gloss-raster-accelerate
     , linear
     , linear-accelerate
@@ -60,11 +60,11 @@ executable raymarcher-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       accelerate
+    , accelerate-llvm-native
     , base >=4.7 && <5
     , colour-accelerate
     , containers
     , gloss
-    , gloss-raster
     , gloss-raster-accelerate
     , linear
     , linear-accelerate
@@ -84,11 +84,11 @@ test-suite raymarcher-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O2 -optc-O3 -optc-ffast-math -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       accelerate
+    , accelerate-llvm-native
     , base >=4.7 && <5
     , colour-accelerate
     , containers
     , gloss
-    , gloss-raster
     , gloss-raster-accelerate
     , linear
     , linear-accelerate
