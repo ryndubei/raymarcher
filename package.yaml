@@ -1,5 +1,5 @@
 name:                raymarcher
-version:             0.1.0.0
+version:             0.2.0.0
 github:              "ryndubei/raymarcher"
 license:             AGPL-3.0-or-later
 author:              "ryndubei"
@@ -8,10 +8,11 @@ copyright:           "2023 ryndubei"
 
 extra-source-files:
 - README.md
+- CHANGELOG.md
 
 # Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
+synopsis:            Simple raymarcher using Accelerate and Gloss
+category:            Graphics
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is

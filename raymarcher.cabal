@@ -5,8 +5,9 @@ cabal-version: 2.2
 -- see: https://github.com/sol/hpack
 
 name:           raymarcher
-version:        0.1.0.0
+version:        0.2.0.0
 description:    Please see the README on GitHub at <https://github.com/ryndubei/raymarcher#readme>
+category:       Graphics
 homepage:       https://github.com/ryndubei/raymarcher#readme
 bug-reports:    https://github.com/ryndubei/raymarcher/issues
 author:         ryndubei
