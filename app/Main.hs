@@ -10,7 +10,6 @@ import Graphics.Gloss.Interface.Pure.Game (Event (EventKey), Key (..), KeyState 
 import qualified Data.Set as S
 import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
-import qualified Data.Array.Accelerate.Interpreter as Interp
 import qualified Data.Array.Accelerate.LLVM.Native as Native
 import qualified Data.Array.Accelerate as A
 import Graphics.Gloss.Accelerate.Raster.Field

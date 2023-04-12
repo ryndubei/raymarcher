@@ -27,7 +27,6 @@ library
       Raymarch
       World
       World.Shape
-      World.Shape.Temporary
       World.Shapes
   other-modules:
       Paths_raymarcher
