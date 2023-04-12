@@ -1,9 +1,9 @@
 raymarcher
 ==========
 
-Raymarcher written with gloss-raster. Currently runs on the CPU.
+Raymarcher written with gloss-raster and Accelerate.
 
-![Screenshot - A yellow sphere and a small green cube casting shadows over a tiled plane.](image.png)
+![Animation - A yellow sphere and a small green cube casting shadows over a tiled plane.](Animation.gif)
 
 Build
 -----
@@ -11,7 +11,7 @@ Build
 Install `stack` using GHCUp, then
 
 ```
-sudo apt install freeglut3-dev
+sudo apt install freeglut3-dev llvm-12
 cd raymarcher
 stack build
 ```
