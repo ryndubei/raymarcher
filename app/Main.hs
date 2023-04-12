@@ -81,8 +81,8 @@ aGetColourAtPoint aState (AL.V2_ x y) =
         , maxDistanceSq = 100
         , epsilon = 0.001
         , initialDirectionVector = AL.rotate 
-            (AL.axisAngle (A.lift $ L.V3 (0 :: Double) 1 0) rot) 
-            (AL.normalize (A.lift $ L.V3 (realToFrac x :: Double) (realToFrac y) 1))
+            (AL.axisAngle (A.lift $ L.V3 (0 :: A.Exp Double) 1 0) rot) 
+            (AL.normalize (A.lift $ L.V3 (A.toFloating x :: A.Exp Double) (A.toFloating (-y)) 1))
         , initialPositionVector = pos
         , fog = black
         , sun

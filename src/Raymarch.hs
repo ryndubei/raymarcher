@@ -1,12 +1,10 @@
 {-# LANGUAGE RebindableSyntax #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Raymarch (runRaymarcher, Config(..)) where
 
 import Prelude hiding ((||), (<), (>), (&&), not)
 import World.Shape
-import Control.Monad.State.Strict
+import Control.Monad.State.Lazy
 import qualified Data.Array.Accelerate.Linear as AL
 import Data.Array.Accelerate.Linear ()
 import qualified Data.Array.Accelerate as A
@@ -78,16 +76,18 @@ getBaseColour = gets (colour . shape . config) <*> gets positionVector
 runRaymarcher :: Config -> A.Exp Colour
 runRaymarcher = evalState raymarcher . initialRaymarcherState
 
+has :: Raymarcher (A.Exp Bool)
+has = foldr1 (||) <$> sequence [hasEscaped, hasReachedMaxSteps, hasCollided]
+
 raymarcher :: Raymarcher (A.Exp Colour)
 raymarcher = do
+  configFog <- gets (fog . config)
+  whileState (not <$> has) step
   hasEscaped' <- hasEscaped
-  hasReachedMaxSteps' <- hasReachedMaxSteps
-  hasCollided' <- hasCollided
-  if hasEscaped'
-    then gets (fog . config)
-  else if hasCollided' || hasReachedMaxSteps'
-    then getColour
-  else step >> raymarcher
+  col <- getColour
+  pure $ if hasEscaped'
+    then configFog
+  else col
 
 getColour :: Raymarcher (A.Exp Colour)
 getColour = do
@@ -97,10 +97,10 @@ getColour = do
   ambient <- gets (ambientLighting . config)
   let lightingNormal = (v1 `AL.dot` v2) / (AL.norm v1 * AL.norm v2)
       lightingFactor = if lightingNormal < 0 || not lit
-        then realToFrac ambient
-        else realToFrac $ (1 - ambient)*lightingNormal + ambient
+        then A.toFloating ambient
+        else A.toFloating $ (1 - ambient)*lightingNormal + ambient
   litBaseColour <- blend (1 - lightingFactor) lightingFactor black <$> getBaseColour
-  fogFactor <- (\d maxd -> if d > maxd then 1.0 else realToFrac (d/maxd)) <$> distanceFromStartSq <*> gets (maxDistanceSq . config)
+  fogFactor <- (\d maxd -> if d > maxd then 1.0 else A.toFloating (d/maxd)) <$> distanceFromStartSq <*> gets (maxDistanceSq . config)
   blend (1 - fogFactor) fogFactor litBaseColour <$> gets (fog . config)
 
 getIsLit :: Raymarcher (A.Exp Bool)
@@ -110,14 +110,11 @@ getIsLit = evalState go . f <$> get
     go = do
       escapeSurface
       step
+      whileState (not <$> has) step
       hasEscaped' <- hasEscaped
-      hasReachedMaxSteps' <- hasReachedMaxSteps
-      hasCollided' <- hasCollided
-      if hasEscaped'
-        then pure (A.constant True)
-      else if hasCollided' || hasReachedMaxSteps'
-        then pure (A.constant False)
-      else step >> go
+      pure $ if hasEscaped'
+        then A.constant True
+      else A.constant False
 
 escapeSurface :: Raymarcher ()
 escapeSurface = do
@@ -127,17 +124,22 @@ escapeSurface = do
   dist <- gets (epsilon . config)
   modify $ \s -> s { positionVector = pos + (dir AL.^* dist) }
 
-instance A.Elt a => A.IfThenElse (A.Exp Bool) (Raymarcher (A.Exp a)) where
-  ifThenElse :: A.Exp Bool -> Raymarcher (A.Exp a) -> Raymarcher (A.Exp a) -> Raymarcher (A.Exp a)
-  ifThenElse p x y = do
-    startState <- get
-    let (resultx, endStatex) = runState x startState
-        (resulty, endStatey) = runState y startState
-        -- TODO: clean this up
-        result = A.cond p resultx resulty
-        endSteps = A.cond p (steps endStatex) (steps endStatey)
-        endDirection = A.cond p (directionVector endStatex) (directionVector endStatey)
-        endPosition = A.cond p (positionVector endStatex) (positionVector endStatey)
-        -- we assume config has not been modified
-    put $ startState{ steps = endSteps, directionVector = endDirection, positionVector = endPosition }
-    pure result
+-- todo: obtain the same effect by removing config from RaymarcherState
+type BareRaymarcher = (A.Exp Point, A.Exp Point, A.Exp Int)
+
+simplify :: RaymarcherState -> BareRaymarcher
+simplify s = (positionVector s, directionVector s, steps s)
+
+-- | Given a non-modifying monadic predicate on the state, and a monadic action,
+-- execute the action repeatedly while the predicate holds.
+whileState :: Raymarcher (A.Exp Bool) -> Raymarcher () -> Raymarcher ()
+whileState p m = do
+  s <- get
+  let -- we assume config remains constant
+      p' (A.T3 pos dir steps) = evalState p s{ positionVector = pos, directionVector = dir, steps = steps }
+      s' = A.lift $ simplify s
+      executeOnce (A.T3 pos dir steps) =
+        let s'' = s{ positionVector = pos, directionVector = dir, steps = steps }
+         in A.lift . simplify $ execState m s''
+      (A.T3 endPos endDir endSteps) = A.while p' executeOnce s'
+  put s{ positionVector = endPos, directionVector = endDir, steps = endSteps }
