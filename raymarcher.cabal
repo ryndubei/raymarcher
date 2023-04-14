@@ -6,6 +6,7 @@ cabal-version: 2.2
 
 name:           raymarcher
 version:        0.2.0.0
+synopsis:       Simple raymarcher using Accelerate and Gloss
 description:    Please see the README on GitHub at <https://github.com/ryndubei/raymarcher#readme>
 category:       Graphics
 homepage:       https://github.com/ryndubei/raymarcher#readme
@@ -18,6 +19,7 @@ license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
+    CHANGELOG.md
 
 source-repository head
   type: git
