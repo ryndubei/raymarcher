@@ -49,7 +49,19 @@ cameraDirection CameraState{cameraRotation} = L.rotate (L.axisAngle (L.V3 0 1 0)
 cameraSunDirection :: CameraState -> L.V3 Double
 cameraSunDirection CameraState{cameraSun} = L.rotate (L.axisAngle (L.V3 0 0 1) cameraSun) (L.normalize $ L.V3 1 0.5 0)
 
-prepareState :: CameraState -> AState
+data CameraInfo = CameraInfo
+  { aCameraPosition :: L.V3 Double
+  , aCameraRotation :: Double
+  , aCameraSun :: L.V3 Double
+  } deriving (Show, Eq, Generic, A.Elt)
+
+pattern CameraInfo_ :: A.Exp (L.V3 Double) -> A.Exp Double -> A.Exp (L.V3 Double) -> A.Exp CameraInfo
+pattern CameraInfo_ pos rot sun = A.Pattern (pos,rot,sun)
+{-# COMPLETE CameraInfo_ #-}
+
+type ViewerState = A.Scalar CameraInfo
+
+prepareState :: CameraState -> ViewerState
 prepareState state@CameraState{cameraPosition, cameraRotation} = 
   A.fromList A.Z . singleton $ CameraInfo
     { aCameraPosition = cameraPosition
@@ -57,25 +69,13 @@ prepareState state@CameraState{cameraPosition, cameraRotation} =
     , aCameraSun = cameraSunDirection state
     }
 
-type AState = A.Scalar CameraInfo
-
-data CameraInfo = CameraInfo
-  { aCameraPosition :: L.V3 Double
-  , aCameraRotation :: Double
-  , aCameraSun :: L.V3 Double
-  } deriving (Show, Eq, Generic, A.Elt )
-
-pattern CameraInfo_ :: A.Exp (L.V3 Double) -> A.Exp Double -> A.Exp (L.V3 Double) -> A.Exp CameraInfo
-pattern CameraInfo_ pos rot sun = A.Pattern (pos,rot,sun)
-{-# COMPLETE CameraInfo_ #-}
-
 main :: IO ()
 main = do
-  playFieldWith Native.run1 window (2,2) 15 initialCameraState prepareState aGetColourAtPoint handleKeys update
+  playFieldWith Native.run1 window (2,2) 15 initialCameraState prepareState getColourAtPoint handleKeys update
 
-aGetColourAtPoint :: A.Acc AState -> A.Exp (L.V2 Float) -> A.Exp Colour
-aGetColourAtPoint aState (AL.V2_ x y) =
-  let (CameraInfo_ pos rot sun) = A.the aState
+getColourAtPoint :: A.Acc ViewerState -> A.Exp (L.V2 Float) -> A.Exp Colour
+getColourAtPoint viewerState (AL.V2_ x y) =
+  let (CameraInfo_ pos rot sun) = A.the viewerState
       config = Config
         { maxSteps = 100
         , maxDistanceSq = 100
@@ -86,12 +86,12 @@ aGetColourAtPoint aState (AL.V2_ x y) =
         , initialPositionVector = pos
         , fog = black
         , sun
-        , shape = scene aState
+        , shape = scene viewerState
         , ambientLighting = 0.1
         }
    in runRaymarcher config
 
-scene :: A.Acc AState -> Shape
+scene :: A.Acc ViewerState -> Shape
 scene = const yellowSphereOnPlaneGreenCube
 
 handleKeys :: Event -> CameraState -> CameraState
